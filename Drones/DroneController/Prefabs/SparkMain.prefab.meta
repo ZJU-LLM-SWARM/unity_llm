@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d3dd34b5d20db6741868a700df9828de
+timeCreated: 1488433549
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 134089
+  packageName: Drone Controller Demo
+  packageVersion: 1.0
+  assetPath: Assets/Drones/DroneController/Prefabs/SparkMain.prefab
+  uploadId: 285105

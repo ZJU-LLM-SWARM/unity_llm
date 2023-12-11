@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f21a37bb2ded045e0a1f8111876a7dfb
+timeCreated: 1461076987
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 134089
+  packageName: Drone Controller Demo
+  packageVersion: 1.0
+  assetPath: Assets/Drones/DroneController/Materials/blue_grid(floor).mat
+  uploadId: 285105

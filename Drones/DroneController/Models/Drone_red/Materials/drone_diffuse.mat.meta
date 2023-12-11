@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9025e4cac9a704625ad691227b7bed2e
+timeCreated: 1477212367
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 134089
+  packageName: Drone Controller Demo
+  packageVersion: 1.0
+  assetPath: Assets/Drones/DroneController/Models/Drone_red/Materials/drone_diffuse.mat
+  uploadId: 285105

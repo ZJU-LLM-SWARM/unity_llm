@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 44bd600a17dd6491b8fc04efc216985f
+timeCreated: 1476797734
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 134089
+  packageName: Drone Controller Demo
+  packageVersion: 1.0
+  assetPath: Assets/Drones/DroneController/Animations/Twerl_left_anim.anim
+  uploadId: 285105

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4d1da654f8e614c63b35df1f80f890b6
+timeCreated: 1461414037
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 134089
+  packageName: Drone Controller Demo
+  packageVersion: 1.0
+  assetPath: Assets/Drones/DroneController/Materials/props3.mat
+  uploadId: 285105

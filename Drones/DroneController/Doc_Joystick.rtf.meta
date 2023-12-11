@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 84d3ae5ef0a86904092dd46921ed9f24
+timeCreated: 1513365833
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 134089
+  packageName: Drone Controller Demo
+  packageVersion: 1.0
+  assetPath: Assets/Drones/DroneController/Doc_Joystick.rtf
+  uploadId: 285105

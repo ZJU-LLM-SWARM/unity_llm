@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c9cec3a1531284c4285c686a477f74ca
+timeCreated: 1476866152
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 134089
+  packageName: Drone Controller Demo
+  packageVersion: 1.0
+  assetPath: Assets/Drones/DroneController/Animations/right_passage.anim
+  uploadId: 285105

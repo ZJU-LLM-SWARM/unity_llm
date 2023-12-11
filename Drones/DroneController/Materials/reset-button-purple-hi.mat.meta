@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fdc857413e011461b82ccc105bd8b03b
+timeCreated: 1474018025
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 134089
+  packageName: Drone Controller Demo
+  packageVersion: 1.0
+  assetPath: Assets/Drones/DroneController/Materials/reset-button-purple-hi.mat
+  uploadId: 285105

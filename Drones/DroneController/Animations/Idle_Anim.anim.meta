@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bbb7a78a581d447f29d36030852ae660
+timeCreated: 1476739066
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 134089
+  packageName: Drone Controller Demo
+  packageVersion: 1.0
+  assetPath: Assets/Drones/DroneController/Animations/Idle_Anim.anim
+  uploadId: 285105

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c4aa33128d7774dd9ac57f6e96e50a4c
+timeCreated: 1463691171
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 134089
+  packageName: Drone Controller Demo
+  packageVersion: 1.0
+  assetPath: Assets/Drones/DroneController/Models/Drone_red/drone_red.mat
+  uploadId: 285105

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 97a1cceecc4511c4cac1134915a5f6ee
+timeCreated: 1513365919
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 134089
+  packageName: Drone Controller Demo
+  packageVersion: 1.0
+  assetPath: Assets/Drones/DroneController/Doc_Mobile Input.rtf
+  uploadId: 285105

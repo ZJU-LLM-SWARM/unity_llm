@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1d43582de47cd3d4aaf463c4e1579a90
+timeCreated: 1488431784
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 134089
+  packageName: Drone Controller Demo
+  packageVersion: 1.0
+  assetPath: Assets/Drones/DroneController/Particles/Sparks/Spark_01.mat
+  uploadId: 285105

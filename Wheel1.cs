@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 汽车控制软件
-
 public class Wheel1 :MonoBehaviour
 {
     public Vector3 com;
@@ -59,6 +57,8 @@ public class Wheel1 :MonoBehaviour
     //     back = control_center.car1_back;
     //     isBraking = control_center.car1_brake;
     // }
+
+    // gengxin
     void Update()
     {
         get_self_information();

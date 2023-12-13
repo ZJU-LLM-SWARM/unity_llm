@@ -6,7 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Plane_Control3 : MonoBehaviour
+public class Plane_Control6 : MonoBehaviour
 {
     public Transform drone;
     public float speed = 30f;
@@ -43,12 +43,12 @@ public class Plane_Control3 : MonoBehaviour
     public float target_x ;
     public float target_y ;
     public float target_z ;
-    public float distance_drone3;
-    public bool drone3_found;
+    public float distance_drone6;
+    public bool drone6_found;
     float left_right_move;
     float front_back_move;
     public GameObject uavs;
-    private int drone_id = 2;
+    private int drone_id = 5;
     void Start()
     {
         drone = gameObject.GetComponent<Transform>();//获取组件
@@ -79,10 +79,10 @@ public class Plane_Control3 : MonoBehaviour
         local_Position_x = transform.localPosition.x;
         local_Position_y = transform.localPosition.y;
         local_Position_z = transform.localPosition.z;
-        distance_drone3 = math_distance(local_Position_x, local_Position_y, local_Position_z, target_x, target_y, target_z);
-        drone3_found = found(distance_drone3);
-        uavs.GetComponent<control_center>().drone3_found = drone3_found;
-        uavs.GetComponent<control_center>().distance_drone3_target = distance_drone3;
+        distance_drone6 = math_distance(local_Position_x, local_Position_y, local_Position_z, target_x, target_y, target_z);
+        drone6_found = found(distance_drone6);
+        uavs.GetComponent<control_center>().drone6_found = drone6_found;
+        uavs.GetComponent<control_center>().distance_drone6_target = distance_drone6;
         left_right_move = uavs.GetComponent<control_center>().drone_speed_xcontrol[drone_id];
         front_back_move = uavs.GetComponent<control_center>().drone_speed_zcontrol[drone_id];
     }

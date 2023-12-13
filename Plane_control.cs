@@ -48,42 +48,29 @@ public class Plane_Control : MonoBehaviour
     bool drone1_found;
     float left_right_move;
     float front_back_move;
-    // void get_d1()
-    // {
-    //     left = control_center.drone1_left;
-    //     right = control_center.drone1_right;
-    //     front = control_center.drone1_front;
-    //     back = control_center.drone1_back;
-    //     Up = control_center.drone1_up;
-    //     Down = control_center.drone1_down;
-    //     left_turn = control_center.drone1_left_turn;
-    //     right_turn = control_center.drone1_right_turn;
-    // }
+    private int drone_id = 0;
     void Start()
     {
         drone = gameObject.GetComponent<Transform>();//获取组件
         rb = GetComponent<Rigidbody>();
-
     }
 
     void Update()
     {   
         get_self_information();
-        // get_d1();
         update_information();
-
         control();
     }
     void update_information()
     {
-        left = uavs.GetComponent<control_center>().drone1_left;
-        right = uavs.GetComponent<control_center>().drone1_right;
-        front = uavs.GetComponent<control_center>().drone1_front;
-        back = uavs.GetComponent<control_center>().drone1_back;
-        Up = uavs.GetComponent<control_center>().drone1_up;
-        Down = uavs.GetComponent<control_center>().drone1_down;
-        left_turn = uavs.GetComponent<control_center>().drone1_left_turn;
-        right_turn = uavs.GetComponent<control_center>().drone1_right_turn;
+        left = uavs.GetComponent<control_center>().drone_left[drone_id];
+        right = uavs.GetComponent<control_center>().drone_right[drone_id];
+        front = uavs.GetComponent<control_center>().drone_front[drone_id];
+        back = uavs.GetComponent<control_center>().drone_back[drone_id];
+        Up = uavs.GetComponent<control_center>().drone_up[drone_id];
+        Down = uavs.GetComponent<control_center>().drone_down[drone_id];
+        left_turn = uavs.GetComponent<control_center>().drone_left_turn[drone_id];
+        right_turn = uavs.GetComponent<control_center>().drone_right_turn[drone_id];
         target_x = uavs.GetComponent<control_center>().target_x;
         target_y = uavs.GetComponent<control_center>().target_y;
         target_z = uavs.GetComponent<control_center>().target_z;
@@ -94,8 +81,8 @@ public class Plane_Control : MonoBehaviour
         drone1_found = found(distance_drone1);
         uavs.GetComponent<control_center>().drone1_found = drone1_found;
         uavs.GetComponent<control_center>().distance_drone1_target = distance_drone1;
-        left_right_move = uavs.GetComponent<control_center>().drone1_speed_xcontrol;
-        front_back_move = uavs.GetComponent<control_center>().drone1_speed_zcontrol;
+        left_right_move = uavs.GetComponent<control_center>().drone_speed_xcontrol[drone_id];
+        front_back_move = uavs.GetComponent<control_center>().drone_speed_zcontrol[drone_id];
     }
     float math_distance(float x1, float y1, float z1, float x2, float y2, float z2)
     {
@@ -112,18 +99,15 @@ public class Plane_Control : MonoBehaviour
     }
     void get_self_information()
     {
-        local_Position_x = transform.localPosition.x;
-        uavs.GetComponent<control_center>().drone1_localPosition_x = local_Position_x;
-        local_Position_y = transform.localPosition.y;
-        uavs.GetComponent<control_center>().drone1_localPosition_y = local_Position_y;
-        local_Position_z = transform.localPosition.z;
-        uavs.GetComponent<control_center>().drone1_localPosition_z = local_Position_z;
+        uavs.GetComponent<control_center>().drone_localPosition_x[drone_id] = local_Position_x;
+        uavs.GetComponent<control_center>().drone_localPosition_y[drone_id] = local_Position_y;
+        uavs.GetComponent<control_center>().drone_localPosition_z[drone_id] = local_Position_z;
         local_Rotation_x = transform.localRotation.eulerAngles.x;
-        uavs.GetComponent<control_center>().drone1_localRotation_x = local_Rotation_x;
+        uavs.GetComponent<control_center>().drone_localRotation_x[drone_id] = local_Rotation_x;
         local_Rotation_y = transform.localRotation.eulerAngles.y;
-        uavs.GetComponent<control_center>().drone1_localRotation_y = local_Rotation_y;
+        uavs.GetComponent<control_center>().drone_localRotation_y[drone_id] = local_Rotation_y;
         local_Rotation_z = transform.localRotation.eulerAngles.z;
-        uavs.GetComponent<control_center>().drone1_localRotation_z = local_Rotation_z;
+        uavs.GetComponent<control_center>().drone_localRotation_z[drone_id] = local_Rotation_z;
         count++;
         if (count == 6)
         {
@@ -136,9 +120,9 @@ public class Plane_Control : MonoBehaviour
             lastpos_x = curpos_x;
             lastpos_y = curpos_y;
             lastpos_z = curpos_z;
-            uavs.GetComponent<control_center>().drone1_speed_x = drone_speed_x;
-            uavs.GetComponent<control_center>().drone1_speed_y = drone_speed_y;
-            uavs.GetComponent<control_center>().drone1_speed_z = drone_speed_z;
+            uavs.GetComponent<control_center>().drone_speed_x[drone_id] = drone_speed_x;
+            uavs.GetComponent<control_center>().drone_speed_y[drone_id] = drone_speed_y;
+            uavs.GetComponent<control_center>().drone_speed_z[drone_id] = drone_speed_z;
             count = 0;
         }
     }

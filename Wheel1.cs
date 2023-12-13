@@ -48,6 +48,7 @@ public class Wheel1 :MonoBehaviour
     float target_z;
     float distance_car1;
     bool car1_found;
+    int car_id =0;
     public GameObject uavs;
     //  void get_w1()
     // {
@@ -57,8 +58,6 @@ public class Wheel1 :MonoBehaviour
     //     back = control_center.car1_back;
     //     isBraking = control_center.car1_brake;
     // }
-
-    // gengxin
     void Update()
     {
         get_self_information();
@@ -70,11 +69,11 @@ public class Wheel1 :MonoBehaviour
     }
     void information_update()
     {
-        left = uavs.GetComponent<control_center>().car1_left;
-        right = uavs.GetComponent<control_center>().car1_right;
-        front = uavs.GetComponent<control_center>().car1_front;
-        back = uavs.GetComponent<control_center>().car1_back;
-        isBraking = uavs.GetComponent<control_center>().car1_brake;
+        left = uavs.GetComponent<control_center>().car_left[car_id];
+        right = uavs.GetComponent<control_center>().car_right[car_id];
+        front = uavs.GetComponent<control_center>().car_front[car_id];
+        back = uavs.GetComponent<control_center>().car_back[car_id];
+        isBraking = uavs.GetComponent<control_center>().car_brake[car_id];
         target_x = uavs.GetComponent<control_center>().target_x;
         target_y = uavs.GetComponent<control_center>().target_y;
         target_z = uavs.GetComponent<control_center>().target_z;
@@ -103,17 +102,17 @@ public class Wheel1 :MonoBehaviour
     void get_self_information()
     {
         local_Position_x = transform.localPosition.x;
-        uavs.GetComponent<control_center>().car1_localPosition_x = local_Position_x;
+        uavs.GetComponent<control_center>().car_localPosition_x[car_id] = local_Position_x;
         local_Position_y = transform.localPosition.y;
-        uavs.GetComponent<control_center>().car1_localPosition_y = local_Position_y;
+        uavs.GetComponent<control_center>().car_localPosition_y[car_id] = local_Position_y;
         local_Position_z = transform.localPosition.z;
-        uavs.GetComponent<control_center>().car1_localPosition_z = local_Position_z;
+        uavs.GetComponent<control_center>().car_localPosition_z[car_id] = local_Position_z;
         local_Rotation_x = transform.localRotation.eulerAngles.x;
-        uavs.GetComponent<control_center>().car1_localRotation_x = local_Rotation_x;
+        uavs.GetComponent<control_center>().car_localRotation_x[car_id] = local_Rotation_x;
         local_Rotation_y = transform.localRotation.eulerAngles.y;
-        uavs.GetComponent<control_center>().car1_localRotation_y = local_Rotation_y;
+        uavs.GetComponent<control_center>().car_localRotation_y[car_id] = local_Rotation_y;
         local_Rotation_z = transform.localRotation.eulerAngles.z;
-        uavs.GetComponent<control_center>().car1_localRotation_z = local_Rotation_z;
+        uavs.GetComponent<control_center>().car_localRotation_z[car_id] = local_Rotation_z;
         count++;
         if (count == 6)
         {
@@ -126,9 +125,9 @@ public class Wheel1 :MonoBehaviour
             lastpos_x = curpos_x;
             lastpos_y = curpos_y;
             lastpos_z = curpos_z;
-            uavs.GetComponent<control_center>().car1_speed_x = car_speed_x;
-            uavs.GetComponent<control_center>().car1_speed_y = car_speed_y;
-            uavs.GetComponent<control_center>().car1_speed_z = car_speed_z;
+            uavs.GetComponent<control_center>().car_speed_x[car_id] = car_speed_x;
+            uavs.GetComponent<control_center>().car_speed_y[car_id] = car_speed_y;
+            uavs.GetComponent<control_center>().car_speed_z[car_id] = car_speed_z;
             count = 0;
         }
     }

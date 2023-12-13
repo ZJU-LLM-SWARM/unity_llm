@@ -6,7 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Plane_Control3 : MonoBehaviour
+public class Plane_Control4 : MonoBehaviour
 {
     public Transform drone;
     public float speed = 30f;
@@ -43,12 +43,23 @@ public class Plane_Control3 : MonoBehaviour
     public float target_x ;
     public float target_y ;
     public float target_z ;
-    public float distance_drone3;
-    public bool drone3_found;
+    public float distance_drone4;
+    public bool drone4_found;
     float left_right_move;
     float front_back_move;
     public GameObject uavs;
-    private int drone_id = 2;
+    private int drone_id = 3;
+    // void get_d2()
+    // {
+    //     left = control_center.drone2_left;
+    //     right = control_center.drone2_right;
+    //     front = control_center.drone2_front;
+    //     back = control_center.drone2_back;
+    //     Up = control_center.drone2_up;
+    //     Down = control_center.drone2_down;
+    //     left_turn = control_center.drone2_left_turn;
+    //     right_turn = control_center.drone2_right_turn;
+    // }
     void Start()
     {
         drone = gameObject.GetComponent<Transform>();//获取组件
@@ -79,10 +90,10 @@ public class Plane_Control3 : MonoBehaviour
         local_Position_x = transform.localPosition.x;
         local_Position_y = transform.localPosition.y;
         local_Position_z = transform.localPosition.z;
-        distance_drone3 = math_distance(local_Position_x, local_Position_y, local_Position_z, target_x, target_y, target_z);
-        drone3_found = found(distance_drone3);
-        uavs.GetComponent<control_center>().drone3_found = drone3_found;
-        uavs.GetComponent<control_center>().distance_drone3_target = distance_drone3;
+        distance_drone4 = math_distance(local_Position_x, local_Position_y, local_Position_z, target_x, target_y, target_z);
+        drone4_found = found(distance_drone4);
+        uavs.GetComponent<control_center>().drone4_found = drone4_found;
+        uavs.GetComponent<control_center>().distance_drone4_target = distance_drone4;
         left_right_move = uavs.GetComponent<control_center>().drone_speed_xcontrol[drone_id];
         front_back_move = uavs.GetComponent<control_center>().drone_speed_zcontrol[drone_id];
     }

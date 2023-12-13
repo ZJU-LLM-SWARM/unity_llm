@@ -1,373 +1,136 @@
-using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
-using UnityEditor.Animations;
-using UnityEditor;
- 
-
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 // 收发消息
 public class Connect : MonoBehaviour
 {
-    public float[] data_rec;
+    //public float[] data_rec;
+    public string data_rec_str;
     public GameObject uavs;
     private void Update()
     {
         if (U2P.Instance.isConnected)
         {
-            data_rec = U2P.Instance.RecData();
-            if (data_rec != null)
+            data_rec_str = U2P.Instance.RecData_str();//字符串接收
+            if (data_rec_str != null)
             {
-                Debug.Log(data_rec);
+                // 将数组转换为字符串并打印  TODO：用newtonsoft.json解析 而不是半自动
+                string json = data_rec_str;//合集 还需要分割
+                MatchCollection matches = Regex.Matches(json, @"\{.*?\}");//正则表达式
+                List<AgentState> agentStates = new List<AgentState>();
+                foreach (Match match in matches)
+                {
+                    try
+                    {
+                        string matchString = match.Value;
+                        print(matchString);
+                        string cleanedMatchString = matchString.Replace("\\", "");//必须去除\\ 否则无法转换
+                        AgentState agentState = JsonUtility.FromJson<AgentState>(cleanedMatchString);
+                        agentStates.Add(agentState);//集合 全部的新状态
+                        //Debug.Log($"Type: {agentState.type}, ID:{agentState.id},Position: {string.Join(", ", agentState.position)}, Rotation: {string.Join(", ", agentState.rotation)}, Velocity: {string.Join(", ", agentState.velocity)}, Target: {agentState.target}, Distance to target: {agentState.distance_to_target}");
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Debug.LogError($"Failed to parse JSON: {match.Value}. Error: {ex.Message}");
+                    }
+                }
                 print("接收到指令");
-                action();
-                // get_state();
-                // 返回0，表示接收到数据
-                List<float> list_send = new List<float>(get_state());
-                U2P.Instance.SendData(list_send);
-                // TODO: 处理数据
+                //更新agent状态，传入控制量
+                agent_update(agentStates);
+
+                string msgsend = get_state(agentStates);               
+                U2P.Instance.SendStringData(msgsend);//回传
             }
         }
     }
-// 获取状态
-    float[] get_state()
+    // 获取状态
+    string get_state(List<AgentState> agentStateList)//获取、更新环境状态
     {
-        float[] data_send = new float[]
+        //float[] data_send = new float[]
+        Dictionary<string, AgentState> statedict = new Dictionary<string, AgentState>();
+        
+        
+        for (int i = 0; i < agentStateList.Count; i++)
         {
-            uavs.GetComponent<control_center>().car1_localPosition_x,
-            uavs.GetComponent<control_center>().car1_localPosition_y,
-            uavs.GetComponent<control_center>().car1_localPosition_z,
-            uavs.GetComponent<control_center>().car1_localRotation_x,
-            uavs.GetComponent<control_center>().car1_localRotation_y,
-            uavs.GetComponent<control_center>().car1_localRotation_z,
-            uavs.GetComponent<control_center>().car1_speed_x,
-            uavs.GetComponent<control_center>().car1_speed_y,
-            uavs.GetComponent<control_center>().car1_speed_z,
-            uavs.GetComponent<control_center>().car1_found?1:0,
-            uavs.GetComponent<control_center>().distance_car1_target,
+            AgentState agentState = agentStateList[i];
+            if (i<2)
+            {
+                agentState.position[0] = uavs.GetComponent<control_center>().car_localPosition_x[i];
+                agentState.position[1] = uavs.GetComponent<control_center>().car_localPosition_y[i];
+                agentState.position[2] = uavs.GetComponent<control_center>().car_localPosition_z[i];
+                agentState.rotation[0] = uavs.GetComponent<control_center>().car_localRotation_x[i];
+                agentState.rotation[1] = uavs.GetComponent<control_center>().car_localRotation_y[i];
+                agentState.rotation[2] = uavs.GetComponent<control_center>().car_localRotation_z[i];
+                agentState.velocity[0] = uavs.GetComponent<control_center>().car_speed_x[i];
+                agentState.velocity[1] = uavs.GetComponent<control_center>().car_speed_y[i];
+                agentState.velocity[2] = uavs.GetComponent<control_center>().car_speed_z[i];
 
-            uavs.GetComponent<control_center>().car2_localPosition_x,
-            uavs.GetComponent<control_center>().car2_localPosition_y,
-            uavs.GetComponent<control_center>().car2_localPosition_z,
-            uavs.GetComponent<control_center>().car2_localRotation_x,
-            uavs.GetComponent<control_center>().car2_localRotation_y,
-            uavs.GetComponent<control_center>().car2_localRotation_z,
-            uavs.GetComponent<control_center>().car2_speed_x,
-            uavs.GetComponent<control_center>().car2_speed_y,
-            uavs.GetComponent<control_center>().car2_speed_z,
-            uavs.GetComponent<control_center>().car2_found?1:0,
-            uavs.GetComponent<control_center>().distance_car2_target,
 
-            uavs.GetComponent<control_center>().drone1_localPosition_x,
-            uavs.GetComponent<control_center>().drone1_localPosition_y,
-            uavs.GetComponent<control_center>().drone1_localPosition_z,
-            uavs.GetComponent<control_center>().drone1_localRotation_x,
-            uavs.GetComponent<control_center>().drone1_localRotation_y,
-            uavs.GetComponent<control_center>().drone1_localRotation_z,
-            uavs.GetComponent<control_center>().drone1_speed_x,
-            uavs.GetComponent<control_center>().drone1_speed_y,
-            uavs.GetComponent<control_center>().drone1_speed_z,
-            uavs.GetComponent<control_center>().drone1_found?1:0,
-            uavs.GetComponent<control_center>().distance_drone1_target,
+            }
+            else
+            {
+                agentState.position[0] = uavs.GetComponent<control_center>().drone_localPosition_x[i-2];
+                agentState.position[1] = uavs.GetComponent<control_center>().drone_localPosition_y[i-2];
+                agentState.position[2] = uavs.GetComponent<control_center>().drone_localPosition_z[i-2];
+                agentState.rotation[0] = uavs.GetComponent<control_center>().drone_localRotation_x[i-2];
+                agentState.rotation[1] = uavs.GetComponent<control_center>().drone_localRotation_y[i-2];
+                agentState.rotation[2] = uavs.GetComponent<control_center>().drone_localRotation_z[i-2];
+                agentState.velocity[0] = uavs.GetComponent<control_center>().drone_speed_x[i-2];
+                agentState.velocity[1] = uavs.GetComponent<control_center>().drone_speed_y[i-2];
+                agentState.velocity[2] = uavs.GetComponent<control_center>().drone_speed_z[i-2];
 
-            uavs.GetComponent<control_center>().drone2_localPosition_x,
-            uavs.GetComponent<control_center>().drone2_localPosition_y,
-            uavs.GetComponent<control_center>().drone2_localPosition_z,
-            uavs.GetComponent<control_center>().drone2_localRotation_x,
-            uavs.GetComponent<control_center>().drone2_localRotation_y,
-            uavs.GetComponent<control_center>().drone2_localRotation_z,
-            uavs.GetComponent<control_center>().drone2_speed_x,
-            uavs.GetComponent<control_center>().drone2_speed_y,
-            uavs.GetComponent<control_center>().drone2_speed_z,
-            uavs.GetComponent<control_center>().drone2_found?1:0,
-            uavs.GetComponent<control_center>().distance_drone2_target,
-                        
-            uavs.GetComponent<control_center>().drone3_localPosition_x,
-            uavs.GetComponent<control_center>().drone3_localPosition_y,
-            uavs.GetComponent<control_center>().drone3_localPosition_z,
-            uavs.GetComponent<control_center>().drone3_localRotation_x,
-            uavs.GetComponent<control_center>().drone3_localRotation_y,
-            uavs.GetComponent<control_center>().drone3_localRotation_z,
-            uavs.GetComponent<control_center>().drone3_speed_x,
-            uavs.GetComponent<control_center>().drone3_speed_y,
-            uavs.GetComponent<control_center>().drone3_speed_z,
-            uavs.GetComponent<control_center>().drone3_found?1:0,
-            uavs.GetComponent<control_center>().distance_drone3_target,
-            
-            uavs.GetComponent<control_center>().target_x,
-            uavs.GetComponent<control_center>().target_y,
-            uavs.GetComponent<control_center>().target_z,     
-
-            Time.time
-        };
-        return data_send;
+            }
+            statedict.Add(agentState.id.ToString(), agentState);
+        }
+        string jsonstr = JsonConvert.SerializeObject(statedict);
+        return jsonstr;
     }
-    // 传入长度为26的整形数组的函数，行动
-    void action()
-    {   
-        if (data_rec[12] != 9)
+    void agent_update(List<AgentState> agentStates)
+    {//更新agent状态，传入控制量 后续指定需要更改的状态量
+        for (int i = 0; i < agentStates.Count; i++)
         {
-            Debug.Log(data_rec);
-            if (data_rec[0] == 1)
-                uavs.GetComponent<control_center>().car1_front = true;
-            else if (data_rec[0] == -1)
+            AgentState agentState = agentStates[i];
+            if (i<2)
             {
-                uavs.GetComponent<control_center>().car1_back = true;
-                uavs.GetComponent<control_center>().car1_front = false;
+                uavs.GetComponent<control_center>().car_front[i] = agentState.car_manual_control[0];
+                uavs.GetComponent<control_center>().car_back[i] = agentState.car_manual_control[1];
+                uavs.GetComponent<control_center>().car_left[i] = agentState.car_manual_control[2];
+                uavs.GetComponent<control_center>().car_right[i] = agentState.car_manual_control[3];
+                uavs.GetComponent<control_center>().car_brake[i] = agentState.car_manual_control[4];
+                // uavs.GetComponent<control_center>().car_localPosition_x[i] = agentState.position[0];
+                // uavs.GetComponent<control_center>().car_localPosition_y[i] = agentState.position[1];
+                // uavs.GetComponent<control_center>().car_localPosition_z[i] = agentState.position[2];
+                // uavs.GetComponent<control_center>().car_localRotation_x[i] = agentState.rotation[0];
+                // uavs.GetComponent<control_center>().car_localRotation_y[i] = agentState.rotation[1];
+                // uavs.GetComponent<control_center>().car_localRotation_z[i] = agentState.rotation[2];
+                // uavs.GetComponent<control_center>().car_speed_x[i] = agentState.velocity[0];
+                // uavs.GetComponent<control_center>().car_speed_y[i] = agentState.velocity[1];
+                // uavs.GetComponent<control_center>().car_speed_z[i] = agentState.velocity[2];
             }
-            else if (data_rec[0] == 0)
+            else
             {
-                uavs.GetComponent<control_center>().car1_front = false;
-                uavs.GetComponent<control_center>().car1_back = false;
+                // uavs.GetComponent<control_center>().drone_front[i-2] = agentState.drone_speed_control[0];
+                // uavs.GetComponent<control_center>().drone_back[i-2] = agentState.drone_speed_control[1];
+                // uavs.GetComponent<control_center>().drone_left[i-2] = agentState.drone_speed_control[2];
+                // uavs.GetComponent<control_center>().drone_right[i-2] = agentState.drone_speed_control[3];
+                // uavs.GetComponent<control_center>().drone_up[i-2] = agentState.drone_speed_control[4];
+                // uavs.GetComponent<control_center>().drone_down[i-2] = agentState.drone_speed_control[5];
+                // uavs.GetComponent<control_center>().drone_left_turn[i-2] = agentState.drone_speed_control[6];
+                // uavs.GetComponent<control_center>().drone_right_turn[i-2] = agentState.drone_speed_control[7];
+                // uavs.GetComponent<control_center>().drone_localPosition_x[i-2] = agentState.position[0];
+                // uavs.GetComponent<control_center>().drone_localPosition_y[i-2] = agentState.position[1];
+                // uavs.GetComponent<control_center>().drone_localPosition_z[i-2] = agentState.position[2];
+                // uavs.GetComponent<control_center>().drone_localRotation_x[i-2] = agentState.rotation[0];
+                // uavs.GetComponent<control_center>().drone_localRotation_y[i-2] = agentState.rotation[1];
+                // uavs.GetComponent<control_center>().drone_localRotation_z[i-2] = agentState.rotation[2];
+                uavs.GetComponent<control_center>().drone_speed_xcontrol[i-2] = agentState.drone_speed_control[0];
+                uavs.GetComponent<control_center>().drone_speed_zcontrol[i-2] = agentState.drone_speed_control[2];
             }
-            if (data_rec[1] == 1)
-            {
-                uavs.GetComponent<control_center>().car1_left = true;
-                uavs.GetComponent<control_center>().car1_right = false;
-            }
-            else if (data_rec[1] == -1)
-            {
-                uavs.GetComponent<control_center>().car1_left = false;
-                uavs.GetComponent<control_center>().car1_right = true;
-            }
-            else if (data_rec[1] == 0)
-            {
-                uavs.GetComponent<control_center>().car1_left = false;
-                uavs.GetComponent<control_center>().car1_right = false;
-            }
-            if (data_rec[2] == 1)
-                uavs.GetComponent<control_center>().car1_brake = true;
-            else if (data_rec[2] == 0)
-                uavs.GetComponent<control_center>().car1_brake = false;
-            if (data_rec[3] == 1)
-            {
-                uavs.GetComponent<control_center>().car2_front = true;
-                uavs.GetComponent<control_center>().car2_back = false;
-            }
-            else if (data_rec[3] == -1)
-            {
-                uavs.GetComponent<control_center>().car2_front = false;
-                uavs.GetComponent<control_center>().car2_back = true;
-            }
-            else if (data_rec[3] == 0)
-            {
-                uavs.GetComponent<control_center>().car2_front = false;
-                uavs.GetComponent<control_center>().car2_back = false;
-            }
-            if (data_rec[4] == 1)
-            {
-                uavs.GetComponent<control_center>().car2_left = true;
-                uavs.GetComponent<control_center>().car2_right = false;
-            }
-            else if (data_rec[4] == -1)
-            {
-                uavs.GetComponent<control_center>().car2_left = false;
-                uavs.GetComponent<control_center>().car2_right = true;
-            }
-            else if (data_rec[4] == 0)
-            {
-                uavs.GetComponent<control_center>().car2_left = false;
-                uavs.GetComponent<control_center>().car2_right = false;
-            }
-            if (data_rec[5] == 1)
-                uavs.GetComponent<control_center>().car2_brake = true;
-            else if (data_rec[5] == 0)
-                uavs.GetComponent<control_center>().car2_brake = false;
-            if (data_rec[6] == 1)
-            {
-                uavs.GetComponent<control_center>().drone1_front = true;
-                uavs.GetComponent<control_center>().drone1_back = false;
-            }
-            else if (data_rec[6] == -1)
-            {
-                uavs.GetComponent<control_center>().drone1_front = false;
-                uavs.GetComponent<control_center>().drone1_back = true;
-            }
-            else if (data_rec[6] == 0)
-            {
-                uavs.GetComponent<control_center>().drone1_front = false;
-                uavs.GetComponent<control_center>().drone1_back = false;
-            }
-            if (data_rec[7] == 1)
-            {
-                uavs.GetComponent<control_center>().drone1_left = false;
-                uavs.GetComponent<control_center>().drone1_right = true;
-            }
-            else if (data_rec[7] == -1)
-            {
-                uavs.GetComponent<control_center>().drone1_left = true;
-                uavs.GetComponent<control_center>().drone1_right = false;
-            }
-            else if (data_rec[7] == 0)
-            {
-                uavs.GetComponent<control_center>().drone1_left = false;
-                uavs.GetComponent<control_center>().drone1_right = false;
-            }
-            if (data_rec[8] == 1)
-            {
-                uavs.GetComponent<control_center>().drone1_up = true;
-                uavs.GetComponent<control_center>().drone1_down = false;
-            }
-            else if (data_rec[8] == -1)
-            {
-                uavs.GetComponent<control_center>().drone1_up = false;
-                uavs.GetComponent<control_center>().drone1_down = true;
-            }
-            else if (data_rec[8] == 0)
-            {
-                uavs.GetComponent<control_center>().drone1_up = false;
-                uavs.GetComponent<control_center>().drone1_down = false;
-            }
-            if (data_rec[9] == 1)
-            {
-                uavs.GetComponent<control_center>().drone1_left_turn = true;
-                uavs.GetComponent<control_center>().drone1_right_turn = false;
-            }
-            else if (data_rec[9] == -1)
-            {
-                uavs.GetComponent<control_center>().drone1_left_turn = false;
-                uavs.GetComponent<control_center>().drone1_right_turn = true;
-            }
-            else if (data_rec[9] == 0)
-            {
-                uavs.GetComponent<control_center>().drone1_left_turn = false;
-                uavs.GetComponent<control_center>().drone1_right_turn = false;
-            }
-            if (data_rec[10] == 1)
-            {
-                uavs.GetComponent<control_center>().drone2_front = true;
-                uavs.GetComponent<control_center>().drone2_back = false;
-            }
-            else if (data_rec[10] == -1)
-            {
-                uavs.GetComponent<control_center>().drone2_front = false;
-                uavs.GetComponent<control_center>().drone2_back = true;
-            }
-            else if (data_rec[10] == 0)
-            {
-                uavs.GetComponent<control_center>().drone2_front = false;
-                uavs.GetComponent<control_center>().drone2_back = false;
-            }
-            if (data_rec[11] == 1)
-            {
-                uavs.GetComponent<control_center>().drone2_left = false;
-                uavs.GetComponent<control_center>().drone2_right = true;
-            }
-            else if (data_rec[11] == -1)
-            {
-                uavs.GetComponent<control_center>().drone2_left = true;
-                uavs.GetComponent<control_center>().drone2_right = false;
-            }
-            else if (data_rec[11] == 0)
-            {
-                uavs.GetComponent<control_center>().drone2_left = false;
-                uavs.GetComponent<control_center>().drone2_right = false;
-            }
-            if (data_rec[12] == 1)
-            {
-                uavs.GetComponent<control_center>().drone2_up = true;
-                uavs.GetComponent<control_center>().drone2_down = false;
-            }
-            else if (data_rec[12] == -1)
-            {
-                uavs.GetComponent<control_center>().drone2_up = false;
-                uavs.GetComponent<control_center>().drone2_down = true;
-            }
-            else if (data_rec[12] == 0)
-            {
-                uavs.GetComponent<control_center>().drone2_up = false;
-                uavs.GetComponent<control_center>().drone2_down = false;
-            }
-            if (data_rec[13] == 1)
-            {
-                uavs.GetComponent<control_center>().drone2_left_turn = true;
-                uavs.GetComponent<control_center>().drone2_right_turn = false;
-            }
-            else if (data_rec[13] == -1)
-            {
-                uavs.GetComponent<control_center>().drone2_left_turn = false;
-                uavs.GetComponent<control_center>().drone2_right_turn = true;
-            }
-            else if (data_rec[13] == 0)
-            {
-                uavs.GetComponent<control_center>().drone2_left_turn = false;
-                uavs.GetComponent<control_center>().drone2_right_turn = false;
-            }
-        }
-        else
-        {
-            Debug.Log(data_rec);
-            if (data_rec[0] == 1)
-                uavs.GetComponent<control_center>().car1_front = true;
-            else if (data_rec[0] == -1)
-            {
-                uavs.GetComponent<control_center>().car1_back = true;
-                uavs.GetComponent<control_center>().car1_front = false;
-            }
-            else if (data_rec[0] == 0)
-            {
-                uavs.GetComponent<control_center>().car1_front = false;
-                uavs.GetComponent<control_center>().car1_back = false;
-            }
-            if (data_rec[1] == 1)
-            {
-                uavs.GetComponent<control_center>().car1_left = true;
-                uavs.GetComponent<control_center>().car1_right = false;
-            }
-            else if (data_rec[1] == -1)
-            {
-                uavs.GetComponent<control_center>().car1_left = false;
-                uavs.GetComponent<control_center>().car1_right = true;
-            }
-            else if (data_rec[1] == 0)
-            {
-                uavs.GetComponent<control_center>().car1_left = false;
-                uavs.GetComponent<control_center>().car1_right = false;
-            }
-            if (data_rec[2] == 1)
-                uavs.GetComponent<control_center>().car1_brake = true;
-            else if (data_rec[2] == 0)
-                uavs.GetComponent<control_center>().car1_brake = false;
-            if (data_rec[3] == 1)
-            {
-                uavs.GetComponent<control_center>().car2_front = true;
-                uavs.GetComponent<control_center>().car2_back = false;
-            }
-            else if (data_rec[3] == -1)
-            {
-                uavs.GetComponent<control_center>().car2_front = false;
-                uavs.GetComponent<control_center>().car2_back = true;
-            }
-            else if (data_rec[3] == 0)
-            {
-                uavs.GetComponent<control_center>().car2_front = false;
-                uavs.GetComponent<control_center>().car2_back = false;
-            }
-            if (data_rec[4] == 1)
-            {
-                uavs.GetComponent<control_center>().car2_left = true;
-                uavs.GetComponent<control_center>().car2_right = false;
-            }
-            else if (data_rec[4] == -1)
-            {
-                uavs.GetComponent<control_center>().car2_left = false;
-                uavs.GetComponent<control_center>().car2_right = true;
-            }
-            else if (data_rec[4] == 0)
-            {
-                uavs.GetComponent<control_center>().car2_left = false;
-                uavs.GetComponent<control_center>().car2_right = false;
-            }
-            if (data_rec[5] == 1)
-                uavs.GetComponent<control_center>().car2_brake = true;
-            else if (data_rec[5] == 0)
-                uavs.GetComponent<control_center>().car2_brake = false;
-            uavs.GetComponent<control_center>().drone1_speed_xcontrol = data_rec[6];
-            uavs.GetComponent<control_center>().drone1_speed_zcontrol = data_rec[7];
-            uavs.GetComponent<control_center>().drone2_speed_xcontrol = data_rec[8];
-            uavs.GetComponent<control_center>().drone2_speed_zcontrol = data_rec[9];
-            uavs.GetComponent<control_center>().drone3_speed_xcontrol = data_rec[10];
-            uavs.GetComponent<control_center>().drone3_speed_zcontrol = data_rec[11];
 
+                
         }
+
     }
 }

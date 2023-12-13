@@ -187,8 +187,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10651, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: -2813337366143557646, guid: 0969cb2700c74144f90029d3ba0416b0, type: 3}
+  - {fileID: 2100000, guid: 70e5eda68ab534a87b26f7e79fba63e6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1064,8 +1063,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10651, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: -2813337366143557646, guid: 0969cb2700c74144f90029d3ba0416b0, type: 3}
+  - {fileID: 2100000, guid: ab5b412936c21cd40b35a94304927171, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2129,8 +2127,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10651, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: -2813337366143557646, guid: 0969cb2700c74144f90029d3ba0416b0, type: 3}
+  - {fileID: 2100000, guid: ab5b412936c21cd40b35a94304927171, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8312,8 +8309,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10651, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: -2813337366143557646, guid: 0969cb2700c74144f90029d3ba0416b0, type: 3}
+  - {fileID: 2100000, guid: f21a37bb2ded045e0a1f8111876a7dfb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12985,6 +12981,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: leftF
       objectReference: {fileID: 0}
+    - target: {fileID: 4240929026232046779, guid: 689fbc83c77623a4eb2cfc89e40a695d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 7ce4bf57661b14a47a7bbdb12434e5bd, type: 2}
+    - target: {fileID: 4240929026232046779, guid: 689fbc83c77623a4eb2cfc89e40a695d, type: 3}
+      propertyPath: 'm_Materials.Array.data[5]'
+      value: 
+      objectReference: {fileID: 580395628951381386, guid: f3226b4812c1d314eb2d992d7eb8c800, type: 3}
     - target: {fileID: 4516165809108038184, guid: 689fbc83c77623a4eb2cfc89e40a695d, type: 3}
       propertyPath: m_Size.y
       value: 2.88

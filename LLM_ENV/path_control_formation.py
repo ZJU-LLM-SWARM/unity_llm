@@ -139,8 +139,8 @@ def car_control(state):
         state.car_manual_control = [front, back, left, right, False]
     return state
 
-n = 5
-ob_n = 2
+n = 12
+ob_n = 4
 distance = np.zeros((n+1, n+1))
 velocity = np.zeros((n+1, 2))
 position = np.zeros((n+1, 2))
@@ -158,6 +158,11 @@ def set_obstacle():
     ob_position[0,1] = -425
     ob_position[1,0] = -425
     ob_position[1,1] = -200
+    ob_position[2,0] = 200
+    ob_position[2,1] = -425
+    ob_position[3,0] = 425
+    ob_position[3,1] = -200
+
 
 # force of obstacle
 def get_avoid_force(x,y):
@@ -185,16 +190,31 @@ def target_distance_init():
         target_distance[i,i] = 0
 
     target_virtual_distance[2] = 0
+    target_virtual_distance[6] = 0
     target_distance[3,0] = 141.4
     target_distance[3,2] = 200
     target_distance[4,0] = 141.4
     target_distance[4,2] = 200
+    target_distance[5,0] = 141.4
+    target_distance[5,2] = 282.4
+    target_distance[7,1] = 141.4
+    target_distance[7,6] = 200
+    target_distance[8,1] = 141.4
+    target_distance[8,6] = 200
+    target_distance[9,1] = 141.4
+    target_distance[9,6] = 282.4
+
 
 def clockwise_init():
     clockwise[1] = 0
     clockwise[2] = 1
     clockwise[3] = -1
     clockwise[4] = 1
+    clockwise[5] = -1
+    clockwise[6] = 1
+    clockwise[7] = -1
+    clockwise[8] = 1
+    clockwise[9] = -1
 
 def update(state):
     velocity[int(state.id),0] = state.velocity[0]
@@ -205,6 +225,9 @@ def update(state):
     if int(state.id) == 0:
         virtual_drone_position[0,0] = state.position[0] + d_v
         virtual_drone_position[0,1] = state.position[2] + d_v
+    if int(state.id) == 1:
+        virtual_drone_position[1,0] = state.position[0] - d_v
+        virtual_drone_position[1,1] = state.position[2] + d_v
     for k in range(0, n+1):
         for j in range(0, n+1):
             distance[k,j] = math.sqrt((position[k,0] - position[j,0])**2 + (position[k,1] - position[j,1])**2)
@@ -215,13 +238,25 @@ def get_first_follower_v():
     Rs = np.array([[s, clockwise[2] * math.sqrt(1 - s*s)],[-clockwise[2] * math.sqrt(1 - s*s), s]])
     velocity[2,:] = -distance[2,0] ** 2 * (position[2,:] - y1).T - np.dot(d1 * distance[2,0] * Rs, np.array((y1 - y2).T))    
 
+def get_second_follower_v():
+    y1, y2, d1, d2 = fm.transforming(target_virtual_distance[6], target_distance[6,6], position[6,:], virtual_drone_position[1,:])
+    s = fm.cal_s(y1, y2, d1, d2)
+    Rs = np.array([[s, clockwise[6] * math.sqrt(1 - s*s)],[-clockwise[6] * math.sqrt(1 - s*s), s]])
+    velocity[6,:] = -distance[6,1] ** 2 * (position[6,:] - y1).T - np.dot(d1 * distance[6,1] * Rs, np.array((y1 - y2).T))    
+
 def control():
     get_first_follower_v()
-    for k in range(3,n+1):
+    for k in range(3,6):
         y1, y2, d1, d2 = fm.transforming(target_distance[k,0], target_distance[k,2], position[0,:], position[2,:])
         s = fm.cal_s(y1, y2, d1, d2)
         Rs = np.array([[s, clockwise[k] * math.sqrt(1 - s*s)],[-clockwise[k] * math.sqrt(1 - s*s), s]])
         velocity[k,:] = -distance[2,0] ** 2 * (position[k,:] - y1).T - np.dot(d1 * distance[2,0] * Rs, np.array((y1 - y2).T))
+    get_second_follower_v()
+    for k in range(7,10):
+        y1, y2, d1, d2 = fm.transforming(target_distance[k,1], target_distance[k,6], position[1,:], position[6,:])
+        s = fm.cal_s(y1, y2, d1, d2)
+        Rs = np.array([[s, clockwise[k] * math.sqrt(1 - s*s)],[-clockwise[k] * math.sqrt(1 - s*s), s]])
+        velocity[k,:] = -distance[6,1] ** 2 * (position[k,:] - y1).T - np.dot(d1 * distance[6,1] * Rs, np.array((y1 - y2).T))
 
 def small():
     for i in range(1,n+1):
@@ -246,7 +281,6 @@ def drone_control():
     small()
     check()
     auto_avoid_obstacle()
-
     check()
 
 def main_control(agents):

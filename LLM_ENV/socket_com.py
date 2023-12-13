@@ -22,7 +22,7 @@ def connect_unity(host, port):
 
 def rec_json_from_unity():  # 接收unity的json字符串数据 并转为状态量字典
 
-    data = sock.recv(1600)
+    data = sock.recv(4096)
     # data_size = sys.getsizeof(data)
     # print(f"The size of the data is {data_size} bytes.")
     data = str(data, encoding="utf-8")

@@ -7,6 +7,7 @@ import path_control as pc
 import path_control_formation as pcf
 import AgentState
 import json
+import sys
 
 # 1:formation 2:path
 mode = 1
@@ -20,7 +21,10 @@ def connect_unity(host, port):
 
 
 def rec_json_from_unity():  # 接收unity的json字符串数据 并转为状态量字典
-    data = sock.recv(4096)
+
+    data = sock.recv(1600)
+    # data_size = sys.getsizeof(data)
+    # print(f"The size of the data is {data_size} bytes.")
     data = str(data, encoding="utf-8")
     # 将 JSON 字符串转换为字典
     data_dict = json.loads(data)
@@ -57,20 +61,27 @@ def socket_main():
     port = 5005  # 5005
     # import path_create as create
     # create.create_path()
+    mode = 1
+
     connect_unity(host, port)
     agents = agent_init()  # 根据agentsettings初始化智能体
-    pcf.target_distance_init()
-    pcf.clockwise_init()
-    while True:
-        dic = rec_json_from_unity()  # 回传的agent状态
-        agent_state_update(agents, dic)  # 更新部分最新状态
-        agents = pcf.main_control(agents)
-        data_to_send = []
-        # 待补充 将控制量填入data_to_send 但是必须约定好每次发送的状态量内容
-        for agent in agents:
-            data_to_send.append(agent.encode_state_json())
-        data_str = json.dumps(data_to_send)
-        sock.sendall(data_str.encode("utf-8"))  # 发送json信息
+    # 1阶控制器
+    if mode == 1:
+        pcf.target_distance_init()
+        pcf.clockwise_init()
+        while True:
+            dic = rec_json_from_unity()  # 回传的agent状态
+            agent_state_update(agents, dic)  # 更新部分最新状态
+            agents = pcf.main_control(agents)
+            data_to_send = []
+            for agent in agents:
+                data_to_send.append(agent.encode_state_json())
+            data_str = json.dumps(data_to_send)
+            sock.sendall(data_str.encode("utf-8"))  # 发送json信息
+    # 2阶控制器
+
+
+
 
         # send_to_unity(data_test)
         # if mode == 1:

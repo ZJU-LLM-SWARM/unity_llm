@@ -6,6 +6,9 @@ from AgentState import AgentState
 
 d_v = 100
 car_states = []
+max_speed = 50
+max_add_speed = 25
+alpha = 0.001
 
 def delete_first_line(filename):
     try:
@@ -164,8 +167,8 @@ def get_avoid_force(x,y):
         q = 100
         d = math.sqrt((x - ob_position[j,0])**2 + (y - ob_position[j,1])**2)
         if d < q:
-            F_d[0] = F_d[0] + alpha_force * (1/d - 1/100) * (1/d) * (x - ob_position[j,0])
-            F_d[1] = F_d[1] + alpha_force * (1/d - 1/100) * (1/d) * (y - ob_position[j,1])
+            F_d[0] = F_d[0] + alpha_force * (1/d - 1/100) ** 2 * (1/d) * (x - ob_position[j,0])
+            F_d[1] = F_d[1] + alpha_force * (1/d - 1/100) ** 2 * (1/d) * (y - ob_position[j,1])
 
 def auto_avoid_obstacle():
     set_obstacle()
@@ -220,22 +223,30 @@ def control():
         Rs = np.array([[s, clockwise[k] * math.sqrt(1 - s*s)],[-clockwise[k] * math.sqrt(1 - s*s), s]])
         velocity[k,:] = -distance[2,0] ** 2 * (position[k,:] - y1).T - np.dot(d1 * distance[2,0] * Rs, np.array((y1 - y2).T))
 
-def check():
+def small():
     for i in range(1,n+1):
-        if velocity[i,0] > 100:
-            velocity[i,0] = 100
-        if velocity[i,0] < -100:
-            velocity[i,0] = -100
-        if velocity[i,1] > 100:
-            velocity[i,1] = 100
-        if velocity[i,1] < -100:
-            velocity[i,1] = -100
+        velocity[i,0] = alpha * velocity[i,0] 
+        velocity[i,1] = alpha * velocity[i,1]
+
+def check():
+
+    for i in range(0,n+1):
+        if velocity[i,0] > max_speed:
+            velocity[i,0] = max_speed
+        if velocity[i,0] < -max_speed:
+            velocity[i,0] = -max_speed
+        if velocity[i,1] > max_speed:
+            velocity[i,1] = max_speed
+        if velocity[i,1] < -max_speed:
+            velocity[i,1] = -max_speed
         
 
 def drone_control():
     control()
+    small()
     check()
     auto_avoid_obstacle()
+
     check()
 
 def main_control(agents):
@@ -248,8 +259,20 @@ def main_control(agents):
         if agents[i].type == 'car':
             agents[i] = car_control(agents[i])
         else:
-            agents[i].drone_speed_control[0] = velocity[int(agents[i].id),0]
-            agents[i].drone_speed_control[2] = velocity[int(agents[i].id),1]
+            if abs(velocity[int(agents[i].id),0] - agents[i].drone_speed_control[0]) > max_add_speed:
+                if velocity[int(agents[i].id),0] > agents[i].drone_speed_control[0]:
+                    agents[i].drone_speed_control[0] = agents[i].drone_speed_control[0] + max_add_speed
+                else:
+                    agents[i].drone_speed_control[0] = agents[i].drone_speed_control[0] - max_add_speed
+            else:
+                agents[i].drone_speed_control[0] = velocity[int(agents[i].id),0]
+            if abs(velocity[int(agents[i].id),1] - agents[i].drone_speed_control[2]) > max_add_speed:
+                if velocity[int(agents[i].id),1] > agents[i].drone_speed_control[2]:
+                    agents[i].drone_speed_control[2] = agents[i].drone_speed_control[1] + max_add_speed
+                else:
+                    agents[i].drone_speed_control[2] = agents[i].drone_speed_control[0] - max_add_speed
+            else:
+                agents[i].drone_speed_control[2] = velocity[int(agents[i].id),1]
     return agents
     
 

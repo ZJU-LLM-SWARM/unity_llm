@@ -99,32 +99,9 @@ public class Connect : MonoBehaviour
                 uavs.GetComponent<control_center>().car_left[i] = agentState.car_manual_control[2];
                 uavs.GetComponent<control_center>().car_right[i] = agentState.car_manual_control[3];
                 uavs.GetComponent<control_center>().car_brake[i] = agentState.car_manual_control[4];
-                // uavs.GetComponent<control_center>().car_localPosition_x[i] = agentState.position[0];
-                // uavs.GetComponent<control_center>().car_localPosition_y[i] = agentState.position[1];
-                // uavs.GetComponent<control_center>().car_localPosition_z[i] = agentState.position[2];
-                // uavs.GetComponent<control_center>().car_localRotation_x[i] = agentState.rotation[0];
-                // uavs.GetComponent<control_center>().car_localRotation_y[i] = agentState.rotation[1];
-                // uavs.GetComponent<control_center>().car_localRotation_z[i] = agentState.rotation[2];
-                // uavs.GetComponent<control_center>().car_speed_x[i] = agentState.velocity[0];
-                // uavs.GetComponent<control_center>().car_speed_y[i] = agentState.velocity[1];
-                // uavs.GetComponent<control_center>().car_speed_z[i] = agentState.velocity[2];
             }
             else
             {
-                // uavs.GetComponent<control_center>().drone_front[i-2] = agentState.drone_speed_control[0];
-                // uavs.GetComponent<control_center>().drone_back[i-2] = agentState.drone_speed_control[1];
-                // uavs.GetComponent<control_center>().drone_left[i-2] = agentState.drone_speed_control[2];
-                // uavs.GetComponent<control_center>().drone_right[i-2] = agentState.drone_speed_control[3];
-                // uavs.GetComponent<control_center>().drone_up[i-2] = agentState.drone_speed_control[4];
-                // uavs.GetComponent<control_center>().drone_down[i-2] = agentState.drone_speed_control[5];
-                // uavs.GetComponent<control_center>().drone_left_turn[i-2] = agentState.drone_speed_control[6];
-                // uavs.GetComponent<control_center>().drone_right_turn[i-2] = agentState.drone_speed_control[7];
-                // uavs.GetComponent<control_center>().drone_localPosition_x[i-2] = agentState.position[0];
-                // uavs.GetComponent<control_center>().drone_localPosition_y[i-2] = agentState.position[1];
-                // uavs.GetComponent<control_center>().drone_localPosition_z[i-2] = agentState.position[2];
-                // uavs.GetComponent<control_center>().drone_localRotation_x[i-2] = agentState.rotation[0];
-                // uavs.GetComponent<control_center>().drone_localRotation_y[i-2] = agentState.rotation[1];
-                // uavs.GetComponent<control_center>().drone_localRotation_z[i-2] = agentState.rotation[2];
                 uavs.GetComponent<control_center>().drone_speed_xcontrol[i-2] = agentState.drone_speed_control[0];
                 uavs.GetComponent<control_center>().drone_speed_zcontrol[i-2] = agentState.drone_speed_control[2];
             }

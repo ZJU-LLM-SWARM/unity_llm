@@ -557,7 +557,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b9e4aa482e2b784e90edc17ad342e23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data_rec: []
+  data_rec_str: 
   uavs: {fileID: 116117804}
 --- !u!114 &116117808
 MonoBehaviour:
@@ -12291,7 +12291,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4118011470767936965, guid: 689fbc83c77623a4eb2cfc89e40a695d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -438
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 4118011470767936965, guid: 689fbc83c77623a4eb2cfc89e40a695d, type: 3}
       propertyPath: m_LocalPosition.y

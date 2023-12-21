@@ -29,17 +29,9 @@ public class Plane_Control8 : MonoBehaviour
     public float local_Rotation_x;
     public float local_Rotation_y;
     public float local_Rotation_z;
-    float curpos_x = 0f;
-    float curpos_y = 0f;
-    float curpos_z = 0f;
-    float lastpos_x = 0f;
-    float lastpos_y = 0f;
-    float lastpos_z = 0f;
     public float drone_speed_x;
     public float drone_speed_y;
     public float drone_speed_z;
-    int count=0;
-
     public float target_x ;
     public float target_y ;
     public float target_z ;
@@ -108,27 +100,17 @@ public class Plane_Control8 : MonoBehaviour
         uavs.GetComponent<control_center>().drone_localRotation_y[drone_id] = local_Rotation_y;
         local_Rotation_z = transform.localRotation.eulerAngles.z;
         uavs.GetComponent<control_center>().drone_localRotation_z[drone_id] = local_Rotation_z;
-        count++;
-        if (count == 6)
-        {
-            curpos_x = transform.position.x;
-            curpos_y = transform.position.y;
-            curpos_z = transform.position.z;
-            drone_speed_x = (curpos_x - lastpos_x)/Time.deltaTime/6;
-            drone_speed_y = (curpos_y - lastpos_y)/Time.deltaTime/6;
-            drone_speed_z = (curpos_z - lastpos_z)/Time.deltaTime/6;
-            lastpos_x = curpos_x;
-            lastpos_y = curpos_y;
-            lastpos_z = curpos_z;
-            uavs.GetComponent<control_center>().drone_speed_x[drone_id] = drone_speed_x;
-            uavs.GetComponent<control_center>().drone_speed_y[drone_id] = drone_speed_y;
-            uavs.GetComponent<control_center>().drone_speed_z[drone_id] = drone_speed_z;
-            count = 0;
-        }
+        drone_speed_x = rb.velocity.x;
+        uavs.GetComponent<control_center>().drone_speed_x[drone_id] = drone_speed_x;
+        drone_speed_y = rb.velocity.y;
+        uavs.GetComponent<control_center>().drone_speed_y[drone_id] = drone_speed_y;
+        drone_speed_z = rb.velocity.z;
+        uavs.GetComponent<control_center>().drone_speed_z[drone_id] = drone_speed_z;
         
     }
     void control()
     {
+        rb.velocity = new Vector3(left_right_move, 0, front_back_move);        
         // rb.AddForce(0, 5f*9.8f, 0);
         if (left)
         {
@@ -192,16 +174,7 @@ public class Plane_Control8 : MonoBehaviour
                 this.transform.Rotate(0.1f, 0, 0);
                 ws_Angel++;
             }
-        }
-        if (front_back_move!=0)
-        {
-            transform.Translate(0, 0, front_back_move*Time.deltaTime);
-        }
-        if (left_right_move!=0)
-        {
-            transform.Translate(left_right_move*Time.deltaTime, 0, 0);
-        }
-        
+        }       
         if (left_turn)
         {
             this.transform.Rotate(0, -angle_speed, 0, Space.World);

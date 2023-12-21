@@ -35,13 +35,6 @@ public class Wheel2 :MonoBehaviour
     public float car_speed_x;
     public float car_speed_y;
     public float car_speed_z;
-    float curpos_x = 0f;
-    float curpos_y = 0f;
-    float curpos_z = 0f;
-    float lastpos_x = 0f;
-    float lastpos_y = 0f;
-    float lastpos_z = 0f;
-    int count = 0;
     float target_x;
     float target_y;
     float target_z;
@@ -112,23 +105,12 @@ public class Wheel2 :MonoBehaviour
         uavs.GetComponent<control_center>().car_localRotation_y[car_id] = local_Rotation_y;
         local_Rotation_z = transform.localRotation.eulerAngles.z;
         uavs.GetComponent<control_center>().car_localRotation_z[car_id] = local_Rotation_z;
-        count++;
-        if (count == 6)
-        {
-            curpos_x = transform.position.x;
-            curpos_y = transform.position.y;
-            curpos_z = transform.position.z;
-            car_speed_x = (curpos_x - lastpos_x)/Time.deltaTime/6;
-            car_speed_y = (curpos_y - lastpos_y)/Time.deltaTime/6;
-            car_speed_z = (curpos_z - lastpos_z)/Time.deltaTime/6;
-            lastpos_x = curpos_x;
-            lastpos_y = curpos_y;
-            lastpos_z = curpos_z;
-            uavs.GetComponent<control_center>().car_speed_x[car_id] = car_speed_x;
-            uavs.GetComponent<control_center>().car_speed_y[car_id] = car_speed_y;
-            uavs.GetComponent<control_center>().car_speed_z[car_id] = car_speed_z;
-            count = 0;
-        }
+        car_speed_x = rb.velocity.x;
+        uavs.GetComponent<control_center>().car_speed_x[car_id] = car_speed_x;
+        car_speed_y = rb.velocity.y;
+        uavs.GetComponent<control_center>().car_speed_y[car_id] = car_speed_y;
+        car_speed_z = rb.velocity.z;
+        uavs.GetComponent<control_center>().car_speed_z[car_id] = car_speed_z;
     }
 
     void get_center_of_mass()
